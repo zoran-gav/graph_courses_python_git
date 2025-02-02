@@ -1,0 +1,223 @@
+
+```{python}
+import pandas as pd
+import country_converter as cc
+
+```
+
+```{python}
+# Load datasets
+oil_consumption = pd.read_csv('oil_consumption.csv')
+tidyr_population = pd.read_csv('tidyr_population.csv')
+country_regions = pd.read_csv('country_continent_data.csv')
+
+
+oil_2012 = (
+    oil_consumption[oil_consumption["year"] == 2012].copy().drop(columns=["year"])
+)
+
+# people data
+people = pd.DataFrame({"name": ["Alice", "Bob", "Charlie"], "age": [25, 32, 45]})
+
+test_info_many = pd.DataFrame(
+    {
+        "name": ["Alice", "Alice", "Bob", "Bob", "Charlie", "Charlie"],
+        "test_date": [
+            "2023-06-05",
+            "2023-06-10",
+            "2023-08-10",
+            "2023-05-02",
+            "2023-05-12",
+            "2023-05-15",
+        ],
+        "result": [
+            "Negative",
+            "Positive",
+            "Positive",
+            "Negative",
+            "Negative",
+            "Negative",
+        ],
+    }
+)
+
+farm_info = pd.DataFrame(
+    {
+        "farm_id": [1, 2, 3],
+        "farm_name": ["Green Acres", "Harvest Hill", "Golden Fields"],
+        "location": ["County A", "County B", "County A"],
+    }
+)
+
+crop_yields = pd.DataFrame(
+    {
+        "farm_id": [1, 1, 2, 3, 3],
+        "crop": ["Wheat", "Corn", "Soybeans", "Wheat", "Barley"],
+        "yield_tons": [50, 60, 45, 55, 30],
+    }
+)
+
+traffic_flow = pd.DataFrame(
+    {
+        "street_name": [
+            "Main St",
+            "Main St",
+            "Broadway",
+            "Broadway",
+            "Elm St",
+            "Elm St",
+        ],
+        "time_of_day": ["9am", "2pm", "9am", "2pm", "9am", "2pm"],
+        "vehicle_count": [1200, 900, 1500, 1100, 700, 600],
+    }
+)
+
+pollution_levels = pd.DataFrame(
+    {
+        "street_name": [
+            "Main St",
+            "Main St",
+            "Broadway",
+            "Broadway",
+            "Elm St",
+            "Elm St",
+        ],
+        "time_of_day": ["9am", "2pm", "9am", "2pm", "9am", "2pm"],
+        "pm_2_5_level": [35.5, 42.1, 40.3, 48.2, 25.7, 30.9],
+    }
+)
+
+test_info_diff = pd.DataFrame(
+    {
+        "name": ["alice", "Bob", "Charlie "],
+        "test_date": ["2023-06-05", "2023-08-10", "2023-05-02"],
+        "result": ["Negative", "Positive", "Negative"],
+    }
+)
+
+asia_countries = pd.DataFrame(
+    {
+        "Country": ["India", "Indonesia", "Philippines"],
+        "Capital": ["New Delhi", "Jakarta", "Manila"],
+    }
+)
+
+asia_population = pd.DataFrame(
+    {
+        "Country": ["India", "indonesia", "Philipines"],
+        "Population": [1393000000, 273500000, 113000000],
+        "Life_Expectancy": [69.7, 71.7, 72.7],
+    }
+)
+```
+**#One to many joins**
+
+
+```{python}
+people
+test_info_many
+pd.merge(people,test_info_many)
+```
+**#Practice**
+
+
+```{python}
+farm_info
+crop_yields
+pd.merge(farm_info,crop_yields)
+```
+
+**#Multiple Key Columns**
+
+```{python}
+traffic_flow
+pollution_levels
+pd.merge(traffic_flow,pollution_levels,on=['street_name','time_of_day'])
+```
+
+**#Practice**
+
+```{python}
+oil_consumption.sort_values(by=['country','year'])
+tidyr_population.sort_values(by=['country','year'])
+oil_consumption_population=pd.merge(oil_consumption,tidyr_population,on=['country','year'])
+oil_consumption_population['oil_consump_per_capita']=oil_consumption_population['oil_consump']/oil_consumption_population['population']
+oil_consumption_population.sort_values(by=['oil_consump_per_capita'])
+#Singapore
+```
+**#Key Mismatches**
+
+
+```{python}
+people
+test_info_diff
+pd.merge(people,test_info_diff)
+```
+
+
+```{python}
+asia_countries
+asia_population
+pd.merge(asia_countries,asia_population)
+```
+
+
+```{python}
+asia_countries['Country']=asia_countries['Country'].str.title().str.strip()
+pd.merge(asia_countries,asia_population)
+```
+
+
+```{python}
+oil_consumption
+tidyr_population
+```
+
+```{python}
+oil_pop=pd.merge(oil_consumption,tidyr_population,how='left',on=['country','year']).sort_values(by=['country','year'])
+oil_pop
+```
+
+```{python}
+oil_countries=set(oil_consumption['country'].unique())
+pop_countries=set(tidyr_population['country'].unique())
+oil_countries-pop_countries
+pop_countries-oil_countries
+```
+
+**#Merging with country code**
+
+
+```{python}
+cc.convert('Nigeria',to='ISO3')
+```
+
+
+```{python}
+oil_consumption['country_code']=cc.convert(oil_consumption['country'],to='ISO3')
+tidyr_population['country_code']=cc.convert(tidyr_population['country'],to='ISO3')
+```
+
+
+```{python}
+oil_countries=set(oil_consumption['country_code'].unique())
+pop_countries=set(tidyr_population['country_code'].unique())
+oil_countries-pop_countries
+
+```
+
+**#Practice**
+
+```{python}
+oil_2012
+country_regions
+```
+
+
+```{python}
+oil_2012['country_code']=cc.convert(oil_2012['country'],to='ISO3')
+```
+
+```{python}
+pd.merge(oil_2012,country_regions,on='country_code').sort_values(by=['oil_consump'])
+```

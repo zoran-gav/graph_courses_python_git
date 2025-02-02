@@ -1,0 +1,146 @@
+
+```{python}
+from openai import OpenAI
+import pandas as pd
+import numpy as np
+from local_setting import OPEN_KEY
+```
+
+**#Setting up the OpenAI Client**
+
+```{python}
+client=OpenAI(api_key=OPEN_KEY)
+
+
+
+
+
+```
+
+**#Making our first call**
+
+```{python}
+response=client.chat.completions.create(
+    model='gpt-4o-mini',
+    messages=[{'role':'user',
+                'content':'What is the most tourist-friendly city in France'}]
+)
+```
+
+```{python}
+response
+```
+
+```{python}
+response.choices[0].message.content
+```
+
+**#Defining helper function**
+
+
+```{python}
+def llm_chat(message):
+    response=client.chat.completions.create(
+    model='gpt-4o-mini',
+    messages=[{'role':'user',
+                'content':message}])
+    return response.choices[0].message.content
+
+```
+
+
+```{python}
+llm_chat('Tell me why Python is an awesome language')
+```
+**#Practice**
+
+```{python}
+rec_brazil=llm_chat('What is the most tourist friendly city in Brazil')
+rec_brazil
+```
+
+**#Variables as prompt inputs**
+
+```{python}
+def city_rec(country):
+    prompt=f'What is the most tourist-fiendly city in {country}?'
+    return llm_chat(prompt)
+```
+
+
+```{python}
+city_rec('Nigeria')
+```
+
+
+```{python}
+country_df=pd.DataFrame({'country':['Nigeria','Chile','France','Canada']})
+country_df
+```
+
+```{python}
+city_rec_vec=np.vectorize(city_rec)
+```
+
+```{python}
+country_df['city_rec']=city_rec_vec(country_df['country'])
+country_df
+```
+
+```{python}
+def get_local_dishes(country):
+    prompt=f'What are the most popular local dishes in{country}?'
+    return llm_chat(prompt)
+```
+
+
+```{python}
+get_local_dishes('North Macedonia')
+```
+
+
+```{python}
+get_local_dishes_vec=np.vectorize(get_local_dishes)
+```
+
+
+```{python}
+country_df['local_dishes']=get_local_dishes_vec(country_df['country'])
+country_df
+```
+
+**#Automated Summary: Movies Dataset**
+
+```{python}
+import vega_datasets as vd
+
+
+
+```
+
+
+```{python}
+movie= vd.data.movies() .head()
+
+```
+
+
+```{python}
+weather=vd.data.seattle_weather().head()
+weather['weather_dic']=weather.to_dict(orient='records')
+weather
+```
+
+
+```{python}
+def weather_summary(day):
+    prompt=f'Considering the following data for this day{day},provide a one paragraph summary of the weather for my report.'
+    return llm_chat(prompt)
+
+```
+
+
+```{python}
+weather['summary']=weather_summary(weather['weather_dic'])
+weather.to_csv('outputs/weather_summary.csv')
+```

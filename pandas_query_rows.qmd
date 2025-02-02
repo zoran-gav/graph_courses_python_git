@@ -1,0 +1,135 @@
+**#Imports**
+
+```{python}
+import pandas as pd
+```
+
+**#Dataste**
+
+```{python}
+yaounde=pd.read_csv("/Users/zorangavrilov/Desktop/graph_courses_python/yaounde_data.csv")
+```
+
+
+```{python}
+yao=yaounde[['age','sex','weight_kg','neighborhood','occupation','symptoms','is_smoker','is_pregnant','igg_result','igm_result']]
+yao
+```
+
+**#Query**
+
+```{python}
+yao.query("sex=='Male' ")
+```
+
+
+```{python}
+yao.query("sex=='Male' ").shape
+```
+
+
+```{python}
+yao_male=yao.query("sex=='Male' ")
+```
+
+**#Practice**
+
+```{python}
+yao_pregnant=yao.query("is_pregnant=='Yes' ")
+```
+
+**#Relational operators**
+
+```{python}
+yao.query("neighborhood.isin(['Briqueterie','Carriere'])")
+```
+
+**#Practice**
+
+```{python}
+yao_children=yao.query('age < 18')
+yao_children
+yao_carriere_ekoudou=yao.query("neighborhood.isin(['Carriere','Ekoudou'])")
+yao_carriere_ekoudou
+```
+
+**#External variable**
+
+```{python}
+min_age=25
+yao.query('age>=@min_age')
+```
+
+**#Practice**
+
+```{python}
+max_age=30
+yao_young=yao.query('age<=@max_age')
+yao_young
+```
+
+**#Combining conditions**
+
+```{python}
+yao.query('age<18 | age>65')
+```
+
+```{python}
+yao.query("is_pregnant=='Yes'|is_smoker=='Ex-smoker'")
+```
+
+```{python}
+yao.is_smoker.value_counts()
+```
+
+**#Practice**
+
+```{python}
+yao_igg_positive_man=yao.query('sex=="Male"&igg_result=="Positive"')
+yao_igg_positive_man
+```
+
+**#Negating conditions**
+
+```{python}
+yao.query('~(occupation=="Student")')
+```
+
+```{python}
+yao.query('~(age<18|weight_kg<30)')
+```
+**#Practice**
+
+```{python}
+yao_dropped=yao.query('~(age>50|is_smoker=="Smoker")')
+yao_dropped
+```
+**#NaN values**
+
+```{python}
+yao.query('is_pregnant.isna()')
+```
+
+```{python}
+yao.query('is_pregnant.notna()')
+```
+
+**#Practice**
+
+```{python}
+yao.query('is_smoker.isna()')
+```
+
+**#Querying based on string patterns**
+
+```{python}
+yao.occupation.value_counts()
+yao.query('occupation.str.contains("Student")')
+yao.query('~(occupation.str.contains("Student"))')
+yao.query('occupation.str.contains("Student|Farmer")')
+```
+**#Practice**
+
+```{python}
+yao.query("symptoms.str.contains('Cough|Fever')")
+```

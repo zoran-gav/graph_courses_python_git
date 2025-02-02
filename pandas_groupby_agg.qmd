@@ -1,0 +1,174 @@
+**#Imports**
+
+```{python}
+import pandas as pd
+import numpy as np
+```
+
+**#Data**
+
+```{python}
+yao=pd.read_csv('yaounde_mini.csv')
+yao
+```
+
+**# Introduce agg**
+
+```{python}
+#Classical way
+yao['age'].mean()
+#agg
+yao.agg(mean_age=('age','mean'))
+```
+
+**Syntax**
+df.agg(summary_name=('column_name','summary_function'))
+
+```{python}
+yao.agg(mean_age=('age','mean'),median_age=('age','median'))
+```
+
+**#Practice**
+
+```{python}
+weight_summary=yao.agg(mean_weight=('weight_kg','mean'),median_weight=('weight_kg','median'))
+weight_summary
+```
+
+**#groupby**
+
+```{python}
+yao.groupby('sex').agg(mean_age=('age','mean'),median_age=('age','median')).reset_index()
+```
+
+
+```{python}
+(
+yao
+    .groupby('sex')
+    .agg(mean_age=('age','mean'),median_age=('age','median'))
+    .reset_index()
+)
+
+```
+
+
+```{python}
+(
+    yao.groupby('neighborhood')
+    .agg(max_weight=('weight_kg','max'),
+    min_weight=('weight_kg','min'),
+    num_inds=('weight_kg','size'))
+    .reset_index()
+)
+```
+
+**#Practice**
+
+```{python}
+(
+    yao.groupby('sex')
+    .agg(max_height_cm=('height_cm','max'),
+    min_height_cm=('height_cm','min'),
+    count=('height_cm','size'))
+    .reset_index()
+)
+```
+
+**#Nested groupings**
+
+```{python}
+(
+    yao.groupby(['sex','neighborhood'])
+    .agg(max_weight=('weight_kg','max'),
+    min_weight=('weight_kg','min'),
+    num_inds=('weight_kg','size'))
+    .reset_index()
+)
+```
+
+**#Practice**
+
+```{python}
+(
+    yao.groupby(['age_category_3','sex'])
+    .agg(max_height=('height_cm','max'),
+    min_height=('height_cm','min'),)
+    .reset_index()
+)
+```
+
+**#NaN agg**
+
+```{python}
+(
+    yao.groupby('is_smoker')
+    .agg(weight_mean=('weight_kg','mean'))
+)
+
+```
+
+
+```{python}
+(
+    yao.groupby('is_smoker',dropna=False)
+    .agg(weight_mean=('weight_kg','mean'),
+    count=('weight_kg','size'))
+)
+
+```
+
+**#Practice**
+
+```{python}
+(
+    yao.groupby('is_pregnant',dropna=False)
+    .agg(weight_mean=('weight_kg','mean'),
+    count=('weight_kg','size'))
+)
+
+```
+
+**#Custom stats with lambda function**
+
+```{python}
+def range_func(x):
+    return max(x)-min(x)
+
+range_func([1,5,6])
+```
+
+
+```{python}
+range_func= lambda x: max(x)-min(x)
+range_func([1,5,6])
+
+```
+
+
+```{python}
+(
+    yao.groupby('neighborhood')
+    .agg(weight_range=('weight_kg', lambda x: max(x)-min(x)))
+)
+```
+
+Coefficient of variation: (std/mean)*100
+
+
+```{python}
+(
+    yao.groupby('neighborhood')
+    .agg(weight_range=('weight_kg', lambda x: (x.std()/x.mean())*100))
+)
+```
+
+**#Practice**
+
+```{python}
+(
+    yao.groupby('neighborhood')
+    .agg(weight_inter_quantile_range=('weight_kg', lambda x: x.quantile(0.75)-x.quantile(0.25)))
+    .reset_index()
+)
+```

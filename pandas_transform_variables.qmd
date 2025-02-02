@@ -1,0 +1,86 @@
+**#Imports**
+
+```{python}
+import pandas as pd
+pd.options.mode.copy_on_write=True
+```
+**#Dataset**
+
+```{python}
+counties=pd.read_csv('/Users/zorangavrilov/Desktop/graph_courses_python/us_counties_data.csv')
+```
+
+
+```{python}
+area_df=counties[['county','area_sq_miles','pop_20']]
+area_df
+```
+
+**#Creating new variables**
+
+```{python}
+area_df['area_sq_km']=area_df['area_sq_miles']*2.59
+area_df['area_hectares']=area_df['area_sq_km']*100
+area_df
+```
+**#Practice**
+
+```{python}
+area_df['area_acres']=area_df['area_sq_miles']*640
+```
+
+**#Modifying existing variables**
+
+```{python}
+area_df['area_sq_km']=area_df['area_sq_km'].round(2)
+area_df
+```
+**#Practice**
+
+```{python}
+area_df['area_acres']=area_df['area_acres'].round(1)
+```
+
+**#Calcukating with multiple variables**
+
+```{python}
+area_df['pop_per_sq_km']=(area_df['pop_20']/area_df['area_sq_km']).round(1)
+area_df=area_df.sort_values(by='pop_per_sq_km',ascending=False)
+area_df
+```
+
+**#Practice**
+
+```{python}
+counties['per_foreign_born']=(counties['foreign_born_num']/counties['pop_20']*100).round(1)
+counties=counties.sort_values(by='per_foreign_born',ascending=False)
+counties
+```
+
+**#Creating Boolean variebles**
+
+```{python}
+changes_df=counties[['county','pop_change_2010_2020','pct_emp_change_2010_2021']]
+changes_df['pop_increase']=changes_df['pop_change_2010_2020']>0
+changes_df['emp_increase']=changes_df['pct_emp_change_2010_2021']>0
+changes_df
+```
+
+```{python}
+changes_df.query('pop_increase & ~(emp_increase)')
+```
+
+**#Practice**
+
+```{python}
+counties['foreign_born_pct_gt_30']=counties['per_foreign_born']>30
+counties.query('foreign_born_pct_gt_30 ==True')
+```
+**#Copy on write warning**
+
+```{python}
+pd.options.mode.copy_on_write=False
+counties_mini=counties[['county','area_sq_miles']]
+counties_mini['area_sq_miles']=counties_mini['area_sq_miles'].round(2)
+counties_mini
+```

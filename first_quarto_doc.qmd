@@ -1,0 +1,41 @@
+---
+title: "My First Quarto Document"
+author: "Your Name"
+format: html
+execute:
+  echo: false
+---
+# Level 1 Title
+
+## Level 2 Title
+
+### Level 3 Title
+This is text with *italics* and **bold**.
+
+You can define bulleted lists:
+
+- First element
+- Second element
+```{python}
+
+```
+# Section 1
+
+Hello
+
+---
+
+# Section 2
+
+World
+
+
+
+```{python}
+2+2
+
+
+```
+---
+[Example Link](https://example.com)
+![Alt text](images/Screenshot%202024-10-26%20at%2016.45.16.png)

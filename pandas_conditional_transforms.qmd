@@ -1,0 +1,44 @@
+**#Imports**
+
+```{python}
+import pandas as pd
+import numpy as np
+import vega_datasets as vd
+import plotly.express as px
+```
+
+**#Intro to replace()**
+
+```{python}
+tips=px.data.tips()
+tips['day'].value_counts()
+```
+
+
+```{python}
+day_mapping={
+    'Sun':'Sunday',
+    'Sat':'Saturday',
+    'Thur':'Thursday',
+    'Fri':'Friday'
+}
+```
+
+
+```{python}
+tips['day']=tips['day'].replace(day_mapping)
+```
+
+**#Practice**
+
+```{python}
+tips['sex_abbr']=tips['sex'].replace({'Male':'M','Female':'F'})
+tips
+```
+
+**#Handling missing values**
+
+```{python}
+movies=vd.data.movies()
+movies
+```

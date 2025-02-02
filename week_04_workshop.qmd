@@ -1,0 +1,31 @@
+---
+title: "India TB Pathways Analysis"
+format: html
+author: "Zoran Gavrilov"
+---
+
+```{python}
+import pandas as pd
+import plotly as px
+from itables import show
+```
+
+*The India TB Pathways dataset is based on a study conducted in Vellore district, Tamil Nadu, India. It examines the pre-diagnostic costs and health-seeking behavior of 880 new adult pulmonary tuberculosis patients registered at Primary Health Centres (PHCs).*
+
+```{python}
+india_tb=pd.read_csv('/Users/zorangavrilov/Desktop/graph_courses_python/india_tb/india_tb_pathways_and_costs.csv')
+show(india_tb)
+```
+
+![Map of Tamil Nadu. Vellore district is in the north-east.](images/VdhR2fr.png)
+
+**Relationship between smoking habit and form of TB**
+
+```{python}
+
+form_of_tb_plot=px.hist_frame(india_tb, x='Smoking', color='Form of TB', text_auto=True)
+form_of_tb_plot.show()
+```
+
+The distribution of the Form of TB among the smokers and non smokers seems to be similar.
+

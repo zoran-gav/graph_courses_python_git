@@ -1,0 +1,138 @@
+**#Subsetting columns**
+**Imports**
+
+```{python}
+import pandas as pd
+```
+
+**dataset**
+
+```{python}
+yao=pd.read_csv("yaounde_data.csv")
+yao
+```
+
+**Selecting columns with square brackets**
+
+```{python}
+yao[['sex','age']]
+```
+
+
+```{python}
+yao['age']
+
+```
+
+
+```{python}
+yao_subset=yao[['age','sex']]
+yao_subset
+```
+
+**Practice**
+
+```{python}
+yao_weight_height=yao[['weight_kg','height_cm']]
+```
+
+**Excluding columns with drop**
+
+```{python}
+yao.drop(columns=['age'])
+```
+
+**Practice**
+
+```{python}
+yao_no_education_consulatation=yao.drop(columns=['highest_education','consultation'])
+```
+
+**Using filters to select columns by Regex**
+
+
+```{python}
+yao.filter(regex='ig')
+```
+
+
+```{python}
+
+yao.filter(regex='^ig')
+```
+
+
+
+```{python}
+
+yao.filter(regex='result$')
+```
+
+**search google regex cheatsheet or ask chatgpt**
+
+**practice**
+
+```{python}
+yao.filter(regex='^is_')
+```
+
+**change column name with rename**
+
+
+```{python}
+yao.rename(columns={'sex':'patient_sex'})
+```
+
+**practice**
+
+```{python}
+yao.rename(columns={'age_category':'age_cat'})
+```
+
+**clean messy columns**
+
+
+```{python}
+test_df=pd.DataFrame(
+    {'good_name':range(3),
+    'bad name':range(3),
+    'bad*@name*2':range(3)}
+)
+test_df
+```
+
+
+```{python}
+test_df.columns.str.replace(r'[^a-zA-Z0-9]','_',regex=True)
+```
+
+
+```{python}
+test_df.columns=test_df.columns.str.replace(r'[^a-zA-Z0-9]','_',regex=True)
+test_df
+```
+
+**practice**
+
+
+```{python}
+cleaning_practice=pd.DataFrame(
+    {'Aloha':range(3),
+    'Bell Chart':range(3),
+    'Animals@the zoo':range(3)
+    }
+)
+cleaning_practice
+```
+
+
+```{python}
+cleaning_practice.columns=cleaning_practice.columns.str.replace(r'[ ]','_',regex=True)
+cleaning_practice.columns=cleaning_practice.columns.str.replace(r'[@]','_at_',regex=True)
+cleaning_practice
+```
+
+
+
+
+`

@@ -1,0 +1,24 @@
+
+```{python}
+!pip install itables
+```
+
+```{python}
+import plotly.express as px
+from itables import show
+
+tips = px.data.tips()
+show(tips)
+```
+
+```{python}
+tips = px.data.tips()
+tips_sex = px.violin(tips, x="day", y="total_bill", color="sex")
+tips_sex.show()
+```
+
+```{python}
+tips_sex.write_image("tips_sex_plot.png")
+```
+
+![Violin plot of total bill by day and sex](tips_sex_plot.png)

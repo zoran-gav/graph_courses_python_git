@@ -1,0 +1,165 @@
+**#Imports**
+
+```{python}
+import pandas as pd
+import numpy as np
+import vega_datasets as vd
+```
+**#Basics of functions**
+
+```{python}
+def pounds_to_kg(pounds):
+    return pounds*0.4536
+```
+
+```{python}
+pounds_to_kg(150)
+```
+
+
+```{python}
+pounds_df=pd.DataFrame({'pounds':[150,200,250]})
+pounds_df
+```
+
+```{python}
+pounds_df['kg']=pounds_to_kg(pounds_df['pounds'])
+pounds_df
+```
+
+**#Practice**
+
+```{python}
+def years_to_months(years):
+    return years*12
+
+
+
+```
+
+
+```{python}
+riots_df=vd.data.la_riots()
+riots_df['age_months']=years_to_months(riots_df['age'])
+riots_df
+```
+
+**#Functions with multiple arguments**
+
+```{python}
+def calc_calories(carb_grams, protein_grams, fat_grams):
+    result=(carb_grams*4)+(protein_grams*4)+(fat_grams*9)
+    return result
+```
+
+```{python}
+calc_calories(50,25,15)
+```
+
+```{python}
+def calc_calories2(carb_grams=0, protein_grams=0, fat_grams=0):
+    result=(carb_grams*4)+(protein_grams*4)+(fat_grams*9)
+    return result
+```
+
+
+```{python}
+calc_calories2(fat_grams=10)
+```
+
+
+```{python}
+food_df=pd.DataFrame({
+    'food':['Apple','Avocado'],
+    'carb':[25,10],
+    'protein':[0,1],
+    'fat':[0,14]
+})
+food_df
+```
+
+```{python}
+calc_calories2(carb_grams=food_df['carb'],protein_grams=food_df['protein'],fat_grams=food_df['fat'])
+```
+**#Practice**
+```{python}
+def calc_bmi(weight,height):
+    return weight/height
+```
+
+```{python}
+bmi_df=pd.DataFrame({
+    'Weight':[70,80,100],
+    'Height':[1.7,1.8,1.2]
+
+})
+```
+```{python}
+
+bmi_df['BMI']=calc_bmi(bmi_df['Weight'],bmi_df['Height'])
+bmi_df
+```
+**#Intro to conditionals**
+
+```{python}
+def class_num(num):
+    if num>0:
+        return 'Positive'
+    elif num<0:
+        return 'Negative'
+    elif num==0:
+        return "Zero"
+    else:
+        return 'Invalid'
+
+print(class_num(np.nan))
+        
+
+
+
+```
+
+```{python}
+num_df=pd.DataFrame({'num':[10,-5,0]})
+num_df
+#class_num(num_df['num'])
+```
+
+```{python}
+class_num_vec=np.vectorize(class_num)
+num_df['Category']=class_num_vec(num_df['num'])
+num_df
+```
+
+```{python}
+def categorize_grade(grade):
+    if grade >=85:
+        return 'Excellent'
+    elif grade >=60 and grade<85:
+        return 'Pass'
+    elif grade<60 and grade >= 0:
+        return 'Fail'
+    else:
+        return 'Invalid grade'
+
+categorize_grade(-5)
+categorize_grade_vec=np.vectorize(categorize_grade)
+categorize_grade_vec([70,80,50,99])   
+```
+
+**#Practice**
+
+```{python}
+def age_cat(age):
+    if age>0 and age<18:
+        return 'Minor'
+    elif age >=18 and age <65:
+        return 'Adult'
+    elif age>=65:
+        return 'Senior'
+    else:
+        return 'Invalid Age'
+age_cat_vec=np.vectorize(age_cat)
+riots_df['Age_category']=age_cat_vec(riots_df['age'])
+riots_df
+```
